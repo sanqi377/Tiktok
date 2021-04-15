@@ -18,10 +18,32 @@ class Analysis {
             url1;
         return new Promise((resolve, reject) => {
             request(url2, (err, rep, body) => {
-                resolve(JSON.parse(body));
-                reject(err);
+                var val = JSON.parse(body);
+                // 视频标题
+                var title = val["item_list"][0]["share_info"]["share_title"];
+                // 无水印视频地址
+                var video = val["item_list"][0]["video"]["play_addr"][
+                    "url_list"
+                ][0].replace(/playwm/, "play");
+                // 视频封面
+                var cover =
+                    val["item_list"][0]["video"]["origin_cover"]["url_list"][0];
+                // 视频音乐
+                var music =
+                    val["item_list"][0]["music"]["play_url"]["url_list"][0];
+                axios({ url: video, method: "post" }).then((res) => {
+                    video = res.headers.location.replace(/http/, "https");
+                    var data = {
+                        title: title,
+                        video: video,
+                        cover: cover,
+                        music: music,
+                    };
+                    resolve(data);
+                    reject(err);
+                });
             });
-        })
+        });
     }
 }
 
