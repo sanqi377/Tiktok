@@ -40,8 +40,8 @@ class Analysis {
                         music: music,
                     };
                     resolve(data);
-                    reject(err);
                 });
+                reject(err);
             });
         });
     }
